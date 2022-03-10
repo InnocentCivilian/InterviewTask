@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "golang serverless attempt."
+Transform: "AWS::Serverless-2016-10-31"
+
+
+Parameters:
+  VaultToken:
+    Type: "String"
+
+
+Globals:
+  Function:
+    Handler: "main"
+    Timeout: 10
+    Runtime: "go1.x"
+
