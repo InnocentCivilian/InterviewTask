@@ -1,7 +1,7 @@
 package dto
 
 //validation error response schema
-type ValidationError struct {
+type ResponseTemplate struct {
 	Message string
-	Errors  string
+	Data    string
 }

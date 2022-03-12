@@ -18,18 +18,20 @@ import (
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	var data dto.CreateDeviceRequest
+	//parse request body into dto
 	err := json.Unmarshal([]byte(request.Body), &data)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
-			Body:       "bad json format",
+			Body:       util.InvalidJsonError,
 			StatusCode: http.StatusBadRequest,
 		}, nil
 	}
 	errMsg, errValidation := util.Validate(data)
-	// errValidation := validate.Struct(device)
+
 	if errValidation != nil {
+		//validation failed
 		var resp = dto.ValidationError{
-			Message: "Request Body is invalid",
+			Message: util.InputDataInvalid,
 			Errors:  errMsg,
 		}
 		data, err := json.MarshalIndent(resp, "", "    ")
