@@ -19,7 +19,7 @@ networks:
   backend:
     name: hmn-sam-backend
 ```
-and run `docker-compose up -d` to start it.
+and run `docker-compose up -d` to start it.(don't forget to run `aws configure` to setup aws credentials)
 ## Run sam
 run `sam local start-api --docker-network hmn-sam-backend` in project root directory
 ## Build project
