@@ -24,3 +24,6 @@ and run `docker-compose up -d` to start it.(don't forget to run `aws configure` 
 run `sam local start-api --docker-network hmn-sam-backend` in project root directory
 ## Build project
 run `sam build` in project root directory
+
+## Run Tests
+run `go test ./..` after a successful build to run all tests
