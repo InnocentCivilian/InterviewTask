@@ -21,30 +21,13 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	//parse request body into dto
 	err := json.Unmarshal([]byte(request.Body), &data)
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			Body:       util.InvalidJsonError,
-			StatusCode: http.StatusBadRequest,
-		}, nil
+		return util.ResponseMessage(util.InvalidJsonError, http.StatusBadRequest)
 	}
 	errMsg, errValidation := util.Validate(data)
 
 	if errValidation != nil {
 		//validation failed
-		var resp = dto.ValidationError{
-			Message: util.InputDataInvalid,
-			Errors:  errMsg,
-		}
-		data, err := json.MarshalIndent(resp, "", "    ")
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				Body:       "internal error",
-				StatusCode: http.StatusInternalServerError,
-			}, nil
-		}
-		return events.APIGatewayProxyResponse{
-			Body:       string(data),
-			StatusCode: http.StatusBadRequest,
-		}, nil
+		return util.ResponseMessage(errMsg, http.StatusBadRequest)
 	}
 	// sess := session.Must(session.NewSession())
 	// db := dynamo.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
