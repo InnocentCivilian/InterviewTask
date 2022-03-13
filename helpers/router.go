@@ -3,6 +3,7 @@ package helpers
 import (
 	"context"
 	"errors"
+	"net/http"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -26,12 +27,12 @@ func Router(handler handler) func(context.Context, Request) (Response, error) {
 		// Add cancellation deadline to context
 		ctx, cancel := context.WithTimeout(ctx, fiveSecondsTimeout)
 		defer cancel()
-
 		switch req.HTTPMethod {
-		case "GET":
-			id, _ := req.PathParameters["id"]
+		case http.MethodGet:
+			id, _ := req.PathParameters["deviceId"]
+			id = "/devices/" + id
 			return handler.Get(ctx, id)
-		case "POST":
+		case http.MethodPost:
 			return handler.Create(ctx, []byte(req.Body))
 		default:
 			return Response{}, errors.New("invalid method")

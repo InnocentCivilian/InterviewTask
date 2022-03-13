@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"os"
-	"time"
 
 	infrastructure "github.com/innocentcivilian/interviewtask/infrastructure/datastore"
 	"github.com/innocentcivilian/interviewtask/model"
@@ -18,13 +16,10 @@ type DeviceService interface {
 	Create(ctx context.Context, device *Device) error
 }
 
-const fiveSecondsTimeout = time.Second * 5
-
 func Init() (DeviceService, error) {
-	tableName := os.Getenv("TABLE_NAME")
 
 	ddb := infrastructure.Database()
-	repository := NewDynamoDBRepository(ddb, tableName)
+	repository := NewDynamoDBRepository(ddb, "Devices")
 	logger, _ := zap.NewProduction()
 	usecase := &LoggerAdapter{
 		Logger:  logger,

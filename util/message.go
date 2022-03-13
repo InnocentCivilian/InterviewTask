@@ -11,6 +11,7 @@ import (
 const InternalError string = "Internal Error"
 const OK string = "OK"
 const CREATED string = "Created"
+const NotFound string = "not found"
 const InvalidJsonError string = "Invalid/bad json format"
 const InputDataInvalid string = "Input data invalid"
 
@@ -22,10 +23,7 @@ func internalErrorBody() string {
 	return string(data)
 }
 func jsonSerialze(data interface{}) (string, error) {
-	var resp = dto.ResponseTemplate{
-		Message: InternalError,
-	}
-	jsonSerialzed, err := json.MarshalIndent(resp, "", "    ")
+	jsonSerialzed, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return internalErrorBody(), errors.New("failed to serilze json")
 	}

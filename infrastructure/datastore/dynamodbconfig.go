@@ -12,9 +12,11 @@ import (
 func Database() *dynamodb.DynamoDB {
 	sess := session.Must(session.NewSession())
 	switch os.Getenv("RUNNING_ENVIRONMENT") {
+	case "Production":
+		return nil // todo : production enviroment db connection config to be added
 	case "Local":
 		return dynamodb.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
 	default:
-		return nil
+		return dynamodb.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
 	}
 }

@@ -27,7 +27,6 @@ func (u *Usecase) Get(ctx context.Context, id string) (*Device, error) {
 
 // Create a single device
 func (u *Usecase) Create(ctx context.Context, device *Device) error {
-
 	if err := u.Repository.Create(ctx, device); err != nil {
 		return errors.Wrap(err, "error creating new device")
 	}

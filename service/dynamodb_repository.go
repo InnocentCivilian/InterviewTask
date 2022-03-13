@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/innocentcivilian/interviewtask/util"
 )
 
 // DynamoDBRepository -
@@ -25,7 +27,7 @@ func (r *DynamoDBRepository) Get(ctx context.Context, id string) (*Device, error
 	input := &dynamodb.GetItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
+			"Id": {
 				S: aws.String(id),
 			},
 		},
@@ -35,7 +37,9 @@ func (r *DynamoDBRepository) Get(ctx context.Context, id string) (*Device, error
 	if err != nil {
 		return nil, err
 	}
-
+	if result.Item == nil {
+		return nil, errors.New(util.NotFound)
+	}
 	if err := dynamodbattribute.UnmarshalMap(result.Item, &device); err != nil {
 		return nil, err
 	}
@@ -43,7 +47,7 @@ func (r *DynamoDBRepository) Get(ctx context.Context, id string) (*Device, error
 	return device, nil
 }
 
-// Create a user
+// Create a device
 func (r *DynamoDBRepository) Create(ctx context.Context, device *Device) error {
 	item, err := dynamodbattribute.MarshalMap(device)
 	if err != nil {
