@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
+//returns correct dynamodb config based on running environment
 func Database() *dynamodb.DynamoDB {
 	sess := session.Must(session.NewSession())
 	switch os.Getenv("RUNNING_ENVIRONMENT") {
