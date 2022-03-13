@@ -1,70 +1,57 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	dto "github.com/innocentcivilian/interviewtask/dto/createdevicerequest"
+	"github.com/innocentcivilian/interviewtask/helpers"
+	"github.com/innocentcivilian/interviewtask/service"
 	"github.com/innocentcivilian/interviewtask/util"
 )
 
-func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-
-	var data dto.CreateDeviceRequest
-	//parse request body into dto
-	err := json.Unmarshal([]byte(request.Body), &data)
-	if err != nil {
-		return util.ResponseMessage(util.InvalidJsonError, http.StatusBadRequest)
-	}
-	errMsg, errValidation := util.Validate(data)
-
-	if errValidation != nil {
-		//validation failed
-		return util.ResponseMessage(errMsg, http.StatusBadRequest)
-	}
-	// sess := session.Must(session.NewSession())
-	// db := dynamo.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
-	// table := dynamodb.Put()
-	// table.Put(device).Run()
-	fmt.Println(device.Id)
-	av, err := dynamodbattribute.MarshalMap(device)
-	if err != nil {
-		log.Fatalf("Got error marshalling new movie item: %s", err)
-	}
-	input := &dynamodb.PutItemInput{
-		Item:      av,
-		TableName: aws.String("Devices"),
-	}
-	fmt.Printf("%s", av)
-	_, err = db.PutItem(input)
-	if err != nil {
-		log.Fatalf("Got error calling PutItem: %s %s", err, err.Error())
-	}
-
-	// dynamodb.Put(dynamodb.Put{TableName: "Devices",Item: &device})
-	return events.APIGatewayProxyResponse{
-		Body:       request.Body,
-		StatusCode: http.StatusOK,
-	}, nil
-	// response.StatusCode = http.StatusOK
-	// response.Body = string(data)
-
-	// return response, nil
-}
+var usecase service.DeviceService
 
 // type book struct {
 // 	ID    int    `dynamodbav:"id"`
 // 	Title string `dynamodbav:"title"`
 // }
+type handler struct {
+	usecase service.DeviceService
+}
 
+// Get a single user
+func (h *handler) Get(ctx context.Context, id string) (helpers.Response, error) {
+	device, err := h.usecase.Get(ctx, id)
+	if err != nil {
+		return util.ResponseMessage(util.InternalError, http.StatusInternalServerError)
+	}
+	return util.ResponseData(util.OK, device, http.StatusOK)
+}
+
+// Create a user
+func (h *handler) Create(ctx context.Context, body []byte) (helpers.Response, error) {
+	user := &users.User{}
+	if err := json.Unmarshal(body, &user); err != nil {
+		return helpers.Fail(err, http.StatusInternalServerError)
+	}
+
+	if err := h.usecase.Create(ctx, user); err != nil {
+		return helpers.Fail(err, http.StatusInternalServerError)
+	}
+
+	return helpers.Success(user, http.StatusCreated)
+}
 func main() {
+	usecase, err := service.Init()
+	if err != nil {
+		log.Panic(err)
+	}
+	// lambda.Start(handler)
+	h := &handler{usecase}
+	lambda.Start(helpers.Router(h))
 
 	// validate = validator.New()
 	// sess := session.Must(session.NewSession())
@@ -120,5 +107,5 @@ func main() {
 	// fmt.Println("Created the table", deviceTable)
 	// fmt.Println("Created the table", deviceTable.Run())
 	// fmt.Println("Created the table", deviceTable)
-	lambda.Start(handler)
+	// lambda.Start(handler)
 }

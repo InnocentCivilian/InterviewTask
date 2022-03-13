@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/aws/aws-lambda-go/events"
 	dto "github.com/innocentcivilian/interviewtask/dto/createdevicerequest"
+	"github.com/innocentcivilian/interviewtask/helpers"
 )
 
 const InternalError string = "Internal Error"
@@ -31,32 +31,32 @@ func jsonSerialze(data interface{}) (string, error) {
 	}
 	return string(jsonSerialzed), nil
 }
-func ResponseMessage(message string, statusCode int) (events.APIGatewayProxyResponse, error) {
+func ResponseMessage(message string, statusCode int) (helpers.Response, error) {
 	var resp = dto.ResponseTemplate{
 		Message: message,
 	}
 	data, err := jsonSerialze(resp)
 	if err != nil {
-		return events.APIGatewayProxyResponse{
+		return helpers.Response{
 			Body:       data,
 			StatusCode: 500,
 		}, nil
 	}
-	return events.APIGatewayProxyResponse{
+	return helpers.Response{
 		Body:       data,
 		StatusCode: statusCode,
 	}, nil
 }
-func ResponseData(message string, data interface{}, statusCode int) (events.APIGatewayProxyResponse, error) {
+func ResponseData(message string, data interface{}, statusCode int) (helpers.Response, error) {
 
 	jsonSerialzed, err := jsonSerialze(data)
 	if err != nil {
-		return events.APIGatewayProxyResponse{
+		return helpers.Response{
 			Body:       jsonSerialzed,
 			StatusCode: 500,
 		}, nil
 	}
-	return events.APIGatewayProxyResponse{
+	return helpers.Response{
 		Body:       jsonSerialzed,
 		StatusCode: statusCode,
 	}, nil
