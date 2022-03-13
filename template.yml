@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "golang serverless attempt."
+Description: "An example Golang AWS SAM Lambda project."
 Transform: "AWS::Serverless-2016-10-31"
 
 
@@ -14,3 +14,33 @@ Globals:
     Timeout: 10
     Runtime: "go1.x"
 
+
+Resources:
+  createDevice:
+      Type: "AWS::Serverless::Function"
+      Properties:
+        CodeUri: "cmd/device"
+        Environment:
+          Variables:
+            CUSTOM_ENV_VAR: "This is a value from an environment variable for Lambda one."
+            RUNNING_ENVIRONMENT: "Local"
+        Events:
+          ApiEvent:
+            Type: "HttpApi"
+          Api:
+            Type: "Api"
+            Properties:
+              Path: "/api/devices"
+              Method: "post"
+  getDevice:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      CodeUri: "cmd/device"
+      Events:
+        ApiEvent:
+          Type: "HttpApi"
+        Api:
+          Type: "Api"
+          Properties:
+            Path: "/api/devices/{deviceId}"
+            Method: "get"

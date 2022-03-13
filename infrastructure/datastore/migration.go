@@ -11,13 +11,13 @@ func Migrate() {
 		TableName: aws.String("Devices"),
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
 			{
-				AttributeName: aws.String("id"),
+				AttributeName: aws.String("Id"),
 				AttributeType: aws.String("S"),
 			},
 		},
 		KeySchema: []*dynamodb.KeySchemaElement{
 			{
-				AttributeName: aws.String("id"),
+				AttributeName: aws.String("Id"),
 				KeyType:       aws.String("HASH"),
 			},
 		},
