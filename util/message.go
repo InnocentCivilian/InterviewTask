@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	dto "github.com/innocentcivilian/interviewtask/dto/createdevicerequest"
+	"github.com/innocentcivilian/interviewtask/dto"
 	"github.com/innocentcivilian/interviewtask/helpers"
 )
 
@@ -15,8 +15,10 @@ const NotFound string = "not found"
 const InvalidJsonError string = "Invalid/bad json format"
 const InputDataInvalid string = "Input data invalid"
 
+type ResponseTemplate = dto.ResponseTemplate
+
 func internalErrorBody() string {
-	var resp = dto.ResponseTemplate{
+	var resp = ResponseTemplate{
 		Message: InternalError,
 	}
 	data, _ := json.MarshalIndent(resp, "", "    ")
@@ -30,7 +32,7 @@ func jsonSerialze(data interface{}) (string, error) {
 	return string(jsonSerialzed), nil
 }
 func ResponseMessage(message string, statusCode int) (helpers.Response, error) {
-	var resp = dto.ResponseTemplate{
+	var resp = ResponseTemplate{
 		Message: message,
 	}
 	data, err := jsonSerialze(resp)

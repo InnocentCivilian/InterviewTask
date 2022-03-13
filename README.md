@@ -34,3 +34,10 @@ this code tries to follow clean archiecture and groups logic and implemention re
 busniness logic and border between trusted and untrusted context is implemented in use case
 ## Files
 * `cmd` holds executables that can be build and put into aws cloud
+* `infrastructure` holds database schema in 2 forms and `dynamodbconfig.go` which resolves dynamodb config based on running environment
+* `dto` holds data transfare objects(both request and response) and validation rules
+* `helpers` holds routing logic and request dispacher
+* `model` holds plain old go object (!) that describes the model
+* `service` holds both internal and external (exportable) services provided by the application
+* `util` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
+* `template.yml` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
