@@ -3,16 +3,19 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	dto "github.com/innocentcivilian/interviewtask/dto/createdevicerequest"
 	"github.com/innocentcivilian/interviewtask/helpers"
+	"github.com/innocentcivilian/interviewtask/model"
 	"github.com/innocentcivilian/interviewtask/service"
 	"github.com/innocentcivilian/interviewtask/util"
 )
 
-var usecase service.DeviceService
+// var usecase service.DeviceService
 
 // type book struct {
 // 	ID    int    `dynamodbav:"id"`
@@ -22,7 +25,7 @@ type handler struct {
 	usecase service.DeviceService
 }
 
-// Get a single user
+// Get a single device
 func (h *handler) Get(ctx context.Context, id string) (helpers.Response, error) {
 	device, err := h.usecase.Get(ctx, id)
 	if err != nil {
@@ -31,20 +34,34 @@ func (h *handler) Get(ctx context.Context, id string) (helpers.Response, error) 
 	return util.ResponseData(util.OK, device, http.StatusOK)
 }
 
-// Create a user
+// Create a device
 func (h *handler) Create(ctx context.Context, body []byte) (helpers.Response, error) {
-	user := &users.User{}
-	if err := json.Unmarshal(body, &user); err != nil {
-		return helpers.Fail(err, http.StatusInternalServerError)
+	deviceRequest := &dto.CreateDeviceRequest{}
+	if err := json.Unmarshal(body, &deviceRequest); err != nil {
+		return util.ResponseMessage(util.InternalError, http.StatusInternalServerError)
+	}
+	// validate attempt
+	errMsg, errValidation := util.Validate(deviceRequest)
+
+	if errValidation != nil {
+		//validation failed
+		return util.ResponseMessage(errMsg, http.StatusBadRequest)
+	}
+	device := &model.Device{
+		Id:          deviceRequest.Id,
+		DeviceModel: deviceRequest.DeviceModel,
+		Name:        deviceRequest.Name,
+		Note:        deviceRequest.Note,
+		Serial:      deviceRequest.Serial,
+	}
+	if err := h.usecase.Create(ctx, device); err != nil {
+		return util.ResponseMessage(util.InternalError, http.StatusInternalServerError)
 	}
 
-	if err := h.usecase.Create(ctx, user); err != nil {
-		return helpers.Fail(err, http.StatusInternalServerError)
-	}
-
-	return helpers.Success(user, http.StatusCreated)
+	return util.ResponseData(util.OK, device, http.StatusCreated)
 }
 func main() {
+	fmt.Println("invoking device main")
 	usecase, err := service.Init()
 	if err != nil {
 		log.Panic(err)
