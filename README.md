@@ -33,6 +33,7 @@ run `go test ./..` after a successful build to run all tests
 this code tries to follow clean archiecture and groups logic and implemention related to an intedend domain into it's own zone
 busniness logic and border between trusted and untrusted context is implemented in use case
 ## Files
+* `.github` holds github action for continuous integration and continuous delivery with build and test stages,depolyment also can be added to this action file
 * `cmd` holds executables that can be build and put into aws cloud
 * `infrastructure` holds database schema in 2 forms `datastore.yml` and `dynamodbconfig.go` which resolves dynamodb config based on running environment
 * `dto` holds data transfare objects(both request and response) and validation rules
