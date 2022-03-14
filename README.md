@@ -1,3 +1,8 @@
+## Pre requirments
+* [Docker](https://www.docker.com/products/docker-desktop)
+* [Aws CLI](https://aws.amazon.com/cli)
+* [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html)
+* [Go lang](https://go.dev/dl/)
 ## Dynamodb setup
 in order to setup aws dynamodb setup locally create a `docker-compose.yml` with following contents:
 ```yml
@@ -25,7 +30,6 @@ Then Apply the [datastore](infrastructure/datastore.yml) with CloudFormation or 
 run `sam local start-api --docker-network hmn-sam-backend` in project root directory where `hmn-sam-backend` is the network name defined in `docker-compose` configuration.
 ## Build project
 run `sam build` in project root directory
-
 ## Run Tests
 run `go test ./..` after a successful build to run all tests
 
@@ -42,3 +46,7 @@ busniness logic and border between trusted and untrusted context is implemented 
 * `service` holds both internal and external (exportable) services provided by the application
 * `util` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
 * `template.yml` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
+
+#Doc Refrences
+* [dynamodb golang SDK](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/using-dynamodb-with-go-sdk.html)
+* [aws dynamodb cli](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
