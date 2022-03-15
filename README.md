@@ -24,6 +24,7 @@ networks:
   backend:
     name: hmn-sam-backend
 ```
+Note that `dockerhub.ir` is a mirror
 and run `docker-compose up -d` to start it.(don't forget to have sam installed and run `aws configure` to setup aws credentials)
 Then Apply the [datastore](infrastructure/datastore.yml) with CloudFormation or call `Migrate()` function within [migration](infrastructure/migration.go)
 ## Run sam
@@ -31,7 +32,8 @@ run `sam local start-api --docker-network hmn-sam-backend` in project root direc
 ## Build project
 run `sam build` in project root directory
 ## Run Tests
-run `go test ./..` after a successful build to run all tests
+run `go test ./..` after a successful build to run all tests (or `go build && go test ./..`). 
+* both build and testing stages happen every time a push or merge happens on `master` branch
 
 ## Code Architecture
 this code tries to follow clean archiecture and groups logic and implemention related to an intedend domain into it's own zone
@@ -46,7 +48,9 @@ busniness logic and border between trusted and untrusted context is implemented 
 * `service` holds both internal and external (exportable) services provided by the application
 * `util` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
 * `template.yml` holds general use case functions and consts to be used in other layers (message codes , response template and so on)
-
+#Deployment
+* Create a stack in AWS cloudformation
+* Deploy to AWS using SAM `sam deploy --guided`
 #Doc Refrences
 * [dynamodb golang SDK](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/using-dynamodb-with-go-sdk.html)
 * [aws dynamodb cli](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
