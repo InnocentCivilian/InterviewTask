@@ -11,13 +11,20 @@ import (
 
 //returns correct dynamodb config based on running environment
 func Database() *dynamodb.DynamoDB {
-	sess := session.Must(session.NewSession())
 	switch os.Getenv("RUNNING_ENVIRONMENT") {
 	case "Production":
-		return nil // todo : production enviroment db connection config to be added
+		sess := session.Must(session.NewSessionWithOptions(session.Options{
+			SharedConfigState: session.SharedConfigEnable,
+		}))
+
+		return dynamodb.New(sess)
 	case "Local":
+		sess := session.Must(session.NewSession())
+
 		return dynamodb.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
 	default:
+		sess := session.Must(session.NewSession())
+
 		return dynamodb.New(sess, &aws.Config{Endpoint: aws.String("http://dynamodb:8000")})
 	}
 }
