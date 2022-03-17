@@ -51,6 +51,8 @@ busniness logic and border between trusted and untrusted context is implemented 
 #Deployment
 * Create a stack in AWS cloudformation
 * Deploy to AWS using SAM `sam deploy --guided`
+
+
 #Doc Refrences
 * [dynamodb golang SDK](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/using-dynamodb-with-go-sdk.html)
 * [aws dynamodb cli](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
